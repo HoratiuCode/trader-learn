@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Any
 
@@ -38,6 +38,63 @@ class InteractiveSessionState:
     notes: list[str] = field(default_factory=list)
 
 
+@dataclass(slots=True)
+class UiTheme:
+    name: str
+    header_color: str = "cyan"
+    banner_color: str = "yellow"
+    panel_border_color: str = "cyan"
+    bullish_color: str = "green"
+    bearish_color: str = "red"
+    accent_color: str = "cyan"
+    command_color: str = "cyan"
+
+
+THEME_PRESETS: dict[str, UiTheme] = {
+    "default": UiTheme(name="default"),
+    "neon": UiTheme(
+        name="neon",
+        header_color="bright_cyan",
+        banner_color="bright_yellow",
+        panel_border_color="bright_cyan",
+        bullish_color="bright_green",
+        bearish_color="bright_red",
+        accent_color="bright_magenta",
+        command_color="bright_cyan",
+    ),
+    "ember": UiTheme(
+        name="ember",
+        header_color="bright_yellow",
+        banner_color="yellow",
+        panel_border_color="bright_red",
+        bullish_color="green",
+        bearish_color="bright_red",
+        accent_color="bright_yellow",
+        command_color="yellow",
+    ),
+    "ocean": UiTheme(
+        name="ocean",
+        header_color="bright_blue",
+        banner_color="bright_cyan",
+        panel_border_color="blue",
+        bullish_color="cyan",
+        bearish_color="bright_magenta",
+        accent_color="bright_blue",
+        command_color="bright_cyan",
+    ),
+    "mono": UiTheme(
+        name="mono",
+        header_color="white",
+        banner_color="white",
+        panel_border_color="white",
+        bullish_color="white",
+        bearish_color="bright_black",
+        accent_color="white",
+        command_color="white",
+    ),
+}
+
+
 class InteractiveTraderSession:
     def __init__(
         self,
@@ -67,6 +124,7 @@ class InteractiveTraderSession:
         self.state: InteractiveSessionState | None = None
         self.current_index = 0
         self._skip_auto_manage_once = False
+        self.theme = THEME_PRESETS["neon"]
 
     def run(self) -> None:
         self._show_header()
@@ -79,7 +137,9 @@ class InteractiveTraderSession:
         self.state = InteractiveSessionState(cash=float(self.initial_budget))
         self.current_index = 0
         self._append_equity_point("session_start")
-        self._render_screen("Session ready. Use buy, sell, next, chart, status, help, or quit.")
+        self._render_screen(
+            "Session ready. Use settings, buy, sell, next, chart, status, help, or quit."
+        )
         while self.current_index < len(self.selected_bars):
             bar = self.selected_bars[self.current_index]
             if self._skip_auto_manage_once:
@@ -99,7 +159,7 @@ class InteractiveTraderSession:
         if console is None:
             print("Memelearn interactive session")
             return
-        console.rule("[bold cyan]Memelearn Interactive Start")
+        console.rule(f"[bold {self.theme.header_color}]Memelearn Interactive Start")
         console.print("Select a memecoin, set a budget, inspect the chart, and trade with commands.")
 
     def _prompt_symbol(self) -> str:
@@ -156,6 +216,9 @@ class InteractiveTraderSession:
 
         if action in {"help", "?"}:
             self._print_help()
+            return True
+        if action in {"settings", "set"}:
+            self._open_settings(argument)
             return True
         if action in {"chart", "c"}:
             self._render_screen("Chart refreshed.")
@@ -427,9 +490,9 @@ class InteractiveTraderSession:
             unrealized = (bar.close - self.state.position.entry_price) * self.state.position.quantity
 
         console.clear()
-        console.rule(f"[bold cyan]Memelearn Live Session - {self.symbol}")
+        console.rule(f"[bold {self.theme.header_color}]Memelearn Live Session - {self.symbol}")
         if banner:
-            console.print(f"[bold yellow]{banner}[/bold yellow]")
+            console.print(Text(banner, style=self.theme.banner_color))
         metrics = Table(show_header=False, box=None)
         metrics.add_column("Field", style="bold")
         metrics.add_column("Value")
@@ -449,7 +512,7 @@ class InteractiveTraderSession:
         if pattern_type:
             metrics.add_row("Pattern", str(pattern_type))
         console.print(metrics)
-        console.print(Panel(chart, title="Candlestick Chart", border_style="cyan"))
+        console.print(Panel(chart, title="Candlestick Chart", border_style=self.theme.panel_border_color))
         if self.state.position is not None:
             pos = self.state.position
             position_table = Table(title="Open Position")
@@ -470,13 +533,14 @@ class InteractiveTraderSession:
             return
         console.print(
             "[bold]Commands:[/bold] "
-            "[green]buy[/green] [amount|%|all], "
-            "[red]sell[/red] [amount|%|all], "
-            "[cyan]next[/cyan], "
-            "[cyan]chart[/cyan], "
-            "[cyan]status[/cyan], "
-            "[cyan]help[/cyan], "
-            "[cyan]quit[/cyan]"
+            f"[{self.theme.command_color}]settings[/{self.theme.command_color}], "
+            f"[green]buy[/green] [amount|%|all], "
+            f"[red]sell[/red] [amount|%|all], "
+            f"[cyan]next[/cyan], "
+            f"[cyan]chart[/cyan], "
+            f"[cyan]status[/cyan], "
+            f"[cyan]help[/cyan], "
+            f"[cyan]quit[/cyan]"
         )
 
     def _print_help(self) -> None:
@@ -484,6 +548,7 @@ class InteractiveTraderSession:
         if console is None:
             return
         console.print(
+            "settings     change chart and terminal colors\n"
             "buy 1000    buy with $1000\n"
             "buy 25%     buy using 25% of available cash\n"
             "sell all    close the open position\n"
@@ -511,7 +576,7 @@ class InteractiveTraderSession:
         grid: list[list[tuple[str, str | None]]] = [[(" ", None) for _ in range(width)] for _ in range(height)]
 
         for index, bar in enumerate(bars):
-            color = "green" if bar.close >= bar.open else "red"
+            color = self.theme.bullish_color if bar.close >= bar.open else self.theme.bearish_color
             x = index * 3 + 1
             high_row = self._price_to_row(bar.high, min_price, max_price, height)
             low_row = self._price_to_row(bar.low, min_price, max_price, height)
@@ -541,9 +606,9 @@ class InteractiveTraderSession:
                     chart.append(char)
             chart.append("\n")
         chart.append("         Legend: ")
-        chart.append("green", style="green")
+        chart.append(self.theme.bullish_color, style=self.theme.bullish_color)
         chart.append(" = bullish, ")
-        chart.append("red", style="red")
+        chart.append(self.theme.bearish_color, style=self.theme.bearish_color)
         chart.append(" = bearish\n")
         return chart
 
@@ -599,6 +664,95 @@ class InteractiveTraderSession:
 
     def _note(self, message: str) -> None:
         self._render_screen(message)
+
+    def _open_settings(self, argument: str | None = None) -> None:
+        console = self._console()
+        if console is None:
+            return
+
+        if argument:
+            self._apply_theme_preset(argument)
+            self._render_screen(f"Theme set to {self.theme.name}.")
+            return
+
+        while True:
+            console.clear()
+            console.rule(f"[bold {self.theme.header_color}]Settings")
+            console.print(f"Current theme: [bold]{self.theme.name}[/bold]")
+            console.print("1. Change theme preset")
+            console.print("2. Customize colors")
+            console.print("3. Reset default theme")
+            console.print("4. Back")
+            choice = console.input("Select an option [1]: ").strip().lower()
+            if not choice or choice == "1":
+                self._choose_theme_preset()
+                return
+            if choice == "2":
+                self._customize_theme_colors()
+                return
+            if choice == "3":
+                self.theme = THEME_PRESETS["default"]
+                self._render_screen("Theme reset to default.")
+                return
+            if choice in {"4", "back", "b", "quit", "q"}:
+                self._render_screen("Settings closed.")
+                return
+            console.print("[red]Invalid selection.[/red]")
+
+    def _choose_theme_preset(self) -> None:
+        console = self._console()
+        if console is None:
+            return
+        presets = list(THEME_PRESETS.values())
+        console.print("[bold]Theme presets:[/bold]")
+        for index, preset in enumerate(presets, start=1):
+            console.print(f"  {index}. {preset.name}")
+        choice = console.input("Choose a preset [1]: ").strip().lower()
+        if not choice:
+            choice = "1"
+        if choice.isdigit() and 1 <= int(choice) <= len(presets):
+            self.theme = presets[int(choice) - 1]
+            self._render_screen(f"Theme changed to {self.theme.name}.")
+            return
+        self._apply_theme_preset(choice)
+        self._render_screen(f"Theme changed to {self.theme.name}.")
+
+    def _apply_theme_preset(self, preset_name: str) -> None:
+        preset = THEME_PRESETS.get(preset_name.lower())
+        if preset is not None:
+            self.theme = preset
+
+    def _customize_theme_colors(self) -> None:
+        console = self._console()
+        if console is None:
+            return
+        console.print("Enter a color name like cyan, magenta, bright_green, or leave blank to keep the current value.")
+        header = self._prompt_color_value("Header color", self.theme.header_color)
+        banner = self._prompt_color_value("Banner color", self.theme.banner_color)
+        border = self._prompt_color_value("Panel border color", self.theme.panel_border_color)
+        bullish = self._prompt_color_value("Bull candle color", self.theme.bullish_color)
+        bearish = self._prompt_color_value("Bear candle color", self.theme.bearish_color)
+        command = self._prompt_color_value("Command color", self.theme.command_color)
+        accent = self._prompt_color_value("Accent color", self.theme.accent_color)
+        self.theme = replace(
+            self.theme,
+            name="custom",
+            header_color=header,
+            banner_color=banner,
+            panel_border_color=border,
+            bullish_color=bullish,
+            bearish_color=bearish,
+            command_color=command,
+            accent_color=accent,
+        )
+        self._render_screen("Custom colors applied.")
+
+    def _prompt_color_value(self, label: str, current: str) -> str:
+        console = self._console()
+        if console is None:
+            return current
+        value = console.input(f"{label} [{current}]: ").strip()
+        return value or current
 
     def _finalize_session(self) -> None:
         if self.state is None:
