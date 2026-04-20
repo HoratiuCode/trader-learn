@@ -31,6 +31,10 @@ class BacktestingIntegrationTests(unittest.TestCase):
         self.assertGreaterEqual(len(summary.symbols), 5)
         self.assertIn("PUPILO", summary.symbols)
         self.assertIn("MEME", summary.symbols)
+        symbol_counts: dict[str, int] = {}
+        for bar in bars:
+            symbol_counts[bar.symbol] = symbol_counts.get(bar.symbol, 0) + 1
+        self.assertTrue(all(count >= 40 for count in symbol_counts.values()))
 
     def test_backtest_pipeline(self) -> None:
         bars = load_market_data(ROOT / "data" / "sample_market_data.csv")

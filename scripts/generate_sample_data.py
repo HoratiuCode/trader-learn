@@ -4,6 +4,7 @@ import csv
 import json
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
+from math import ceil
 from pathlib import Path
 
 
@@ -100,8 +101,11 @@ def build_rows() -> list[dict[str, object]]:
     base_timestamp = datetime(2026, 4, 20, 0, 0, tzinfo=timezone.utc)
     for coin_index, coin in enumerate(MEMECOINS):
         timestamp = base_timestamp + timedelta(days=coin_index)
-        previous_close = coin.scenario.closes[0] * 0.98
-        for close, volume, liquidity in zip(coin.scenario.closes, coin.scenario.volumes, coin.scenario.liquidities):
+        closes = _expand_pattern(coin.scenario.closes, 40, price_bias=0.035)
+        volumes = _expand_pattern(coin.scenario.volumes, 40, price_bias=0.06)
+        liquidities = _expand_pattern(coin.scenario.liquidities, 40, price_bias=0.04)
+        previous_close = closes[0] * 0.98
+        for close, volume, liquidity in zip(closes, volumes, liquidities):
             open_price = previous_close
             body = close - open_price
             direction = 1 if body >= 0 else -1
@@ -129,6 +133,28 @@ def build_rows() -> list[dict[str, object]]:
             timestamp += timedelta(minutes=1)
             previous_close = close
     return rows
+
+
+def _expand_pattern(values: list[float], target_length: int, *, price_bias: float) -> list[float]:
+    if not values:
+        return [0.0] * target_length
+    if len(values) >= target_length:
+        return values[:target_length]
+
+    base_start = values[0]
+    base_end = values[-1]
+    direction = 1.0 if base_end >= base_start else -1.0
+    cycle_count = ceil(target_length / len(values))
+    expanded: list[float] = []
+    for cycle in range(cycle_count):
+        cycle_multiplier = 1.0 + direction * price_bias * cycle
+        cycle_offset = direction * base_start * price_bias * 0.35 * cycle
+        for value in values:
+            adjusted = max(0.0001, value * cycle_multiplier + cycle_offset)
+            expanded.append(round(adjusted, 6))
+            if len(expanded) == target_length:
+                return expanded
+    return expanded[:target_length]
 
 
 def write_csv(path: Path, rows: list[dict[str, object]]) -> None:
