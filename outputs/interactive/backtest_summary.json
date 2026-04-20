@@ -8,8 +8,8 @@
     "avg_mfe": 0.0,
     "consecutive_losses": 0.0,
     "expectancy": 0.0,
-    "final_equity": 100.0,
-    "initial_capital": 100.0,
+    "final_equity": 1000.0,
+    "initial_capital": 1000.0,
     "max_drawdown": 0.0,
     "profit_factor": 0.0,
     "recovery_factor": 0.0,
@@ -46,38 +46,46 @@
         "market_cap"
       ],
       "count": 10,
-      "end": "2026-04-20T00:09:00+00:00",
+      "end": "2026-04-26T00:09:00+00:00",
       "missing_liquidity": 0,
       "missing_market_cap": 0,
-      "start": "2026-04-20T00:00:00+00:00",
+      "start": "2026-04-26T00:00:00+00:00",
       "symbols": [
-        "PUPILO"
+        "BOUNCE9"
       ]
     },
     "equity_curve": [
       {
-        "cash": 100.0,
-        "equity": 100.0,
+        "cash": 1000.0,
+        "equity": 1000.0,
         "label": "session_start",
         "position_value": 0.0,
-        "symbol": "PUPILO",
-        "timestamp": "2026-04-20T00:09:00+00:00"
+        "symbol": "BOUNCE9",
+        "timestamp": "2026-04-26T00:00:00+00:00"
       },
       {
-        "cash": 100.0,
-        "equity": 100.0,
+        "cash": 1000.0,
+        "equity": 1000.0,
+        "label": "next",
+        "position_value": 0.0,
+        "symbol": "BOUNCE9",
+        "timestamp": "2026-04-26T00:01:00+00:00"
+      },
+      {
+        "cash": 1000.0,
+        "equity": 1000.0,
         "label": "session_end",
         "position_value": 0.0,
-        "symbol": "PUPILO",
-        "timestamp": "2026-04-20T00:09:00+00:00"
+        "symbol": "BOUNCE9",
+        "timestamp": "2026-04-26T00:01:00+00:00"
       }
     ],
-    "final_equity": 100.0,
-    "initial_capital": 100.0,
+    "final_equity": 1000.0,
+    "initial_capital": 1000.0,
     "notes": [
       "Interactive session started from the launcher."
     ],
-    "strategy_name": "InteractiveSession:PUPILO",
+    "strategy_name": "InteractiveSession:BOUNCE9",
     "trades": []
   },
   "score": {

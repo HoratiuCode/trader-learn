@@ -74,7 +74,7 @@ class InteractiveTraderSession:
             self.initial_budget = self._prompt_budget()
         self.feature_rows = FeatureEngineer().build(self.selected_bars)
         self.state = InteractiveSessionState(cash=float(self.initial_budget))
-        self.current_index = min(max(self.window_size - 1, 0), len(self.selected_bars) - 1)
+        self.current_index = 0
         self._append_equity_point("session_start")
         self._render_screen("Session ready. Use buy, sell, next, chart, status, help, or quit.")
         while self.current_index < len(self.selected_bars):
@@ -423,6 +423,7 @@ class InteractiveTraderSession:
         metrics.add_row("Close", format_currency(bar.close))
         metrics.add_row("Range", f"{format_currency(bar.low)} - {format_currency(bar.high)}")
         metrics.add_row("Volume", f"{bar.volume:,.0f}")
+        metrics.add_row("Candle", f"{self.current_index + 1}/{len(self.selected_bars)}")
         if bar.liquidity is not None:
             metrics.add_row("Liquidity", f"{bar.liquidity:,.0f}")
         pattern_type = bar.raw.get("chart_type") or bar.raw.get("scenario")

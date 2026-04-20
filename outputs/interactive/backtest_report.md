@@ -1,8 +1,8 @@
-# Backtest Report - InteractiveSession:PUPILO
+# Backtest Report - InteractiveSession:BOUNCE9
 
 ## Summary
-- Initial capital: $100.00
-- Final equity: $100.00
+- Initial capital: $1,000.00
+- Final equity: $1,000.00
 - Total return: 0.00%
 - Win rate: 0.00%
 - Max drawdown: 0.00%
