@@ -1,12 +1,12 @@
 {
   "clusters": [
     {
-      "average_loss": -4.9875,
+      "average_loss": -3.7444,
       "characteristics": {
         "body_bucket": "low",
         "close_location_bucket": "low",
         "distance_bucket": "low",
-        "entry_reason": "manual_buy",
+        "entry_reason": "manual_buy_scale_in",
         "liquidity_bucket": "mid",
         "momentum_bucket": "low",
         "volatility_bucket": "mid",
@@ -16,14 +16,14 @@
       "key": "generic_loss|liq=mid|vol=low|var=mid",
       "label": "loss cluster around mid-liquidity / low-volume entries",
       "sample_reasons": [
-        "manual_buy"
+        "manual_buy_scale_in"
       ],
-      "total_loss": 4.9875,
+      "total_loss": 3.7444,
       "win_rate_against": 0.0
     }
   ],
   "recommendations": [
     "Collect more labeled trades to refine failure clustering."
   ],
-  "summary": "Primary weakness: loss cluster around mid-liquidity / low-volume entries (1 trades, 4.99 total loss)."
+  "summary": "Primary weakness: loss cluster around mid-liquidity / low-volume entries (1 trades, 3.74 total loss)."
 }

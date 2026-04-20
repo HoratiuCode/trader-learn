@@ -1,9 +1,9 @@
 # Failure Analysis
 
-Primary weakness: loss cluster around mid-liquidity / low-volume entries (1 trades, 4.99 total loss).
+Primary weakness: loss cluster around mid-liquidity / low-volume entries (1 trades, 3.74 total loss).
 
 ## Clusters
-- loss cluster around mid-liquidity / low-volume entries: 1 trades, loss=$4.99
+- loss cluster around mid-liquidity / low-volume entries: 1 trades, loss=$3.74
 
 ## Recommendations
 - Collect more labeled trades to refine failure clustering.

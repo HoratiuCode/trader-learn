@@ -180,9 +180,6 @@ class InteractiveTraderSession:
     def _buy(self, argument: str | None) -> bool:
         if self.state is None:
             return False
-        if self.state.position is not None:
-            self._render_screen("A position is already open. Sell it before buying again.")
-            return False
         bar = self.selected_bars[self.current_index]
         price = self._apply_slippage(bar.close, is_buy=True)
         spend = self._resolve_spend(argument, self.state.cash)
@@ -202,24 +199,66 @@ class InteractiveTraderSession:
             return False
         features = self.feature_rows[self.current_index]
         self.state.cash = max(0.0, self.state.cash - total_cost)
-        self.state.position = OpenPosition(
-            symbol=bar.symbol,
-            entry_time=bar.timestamp,
-            entry_index=self.current_index,
-            entry_price=price,
-            quantity=quantity,
-            stop_loss=price * (1.0 - self.backtest_config.stop_loss_pct),
-            take_profit=price * (1.0 + self.backtest_config.take_profit_pct),
-            entry_reason="manual_buy",
-            entry_features={key: float(value) for key, value in features.items() if isinstance(value, (int, float))},
-            entry_tags=["manual"],
-            entry_fee=fee,
-            max_price=bar.high,
-            min_price=bar.low,
-        )
+        if self.state.position is None:
+            self.state.position = OpenPosition(
+                symbol=bar.symbol,
+                entry_time=bar.timestamp,
+                entry_index=self.current_index,
+                entry_price=price,
+                quantity=quantity,
+                stop_loss=price * (1.0 - self.backtest_config.stop_loss_pct),
+                take_profit=price * (1.0 + self.backtest_config.take_profit_pct),
+                entry_reason="manual_buy",
+                entry_features={key: float(value) for key, value in features.items() if isinstance(value, (int, float))},
+                entry_tags=["manual"],
+                entry_fee=fee,
+                max_price=bar.high,
+                min_price=bar.low,
+            )
+            buy_message = f"Bought {quantity:.6f} {bar.symbol} at {format_currency(price)}."
+        else:
+            self._scale_into_position(
+                bar=bar,
+                price=price,
+                quantity=quantity,
+                fee=fee,
+                entry_features={key: float(value) for key, value in features.items() if isinstance(value, (int, float))},
+            )
+            buy_message = f"Added {quantity:.6f} {bar.symbol} at {format_currency(price)}."
         self._append_equity_point("buy")
-        self._render_screen(f"Bought {quantity:.6f} {bar.symbol} at {format_currency(price)}.")
+        self._render_screen(buy_message)
         return True
+
+    def _scale_into_position(
+        self,
+        *,
+        bar: MarketBar,
+        price: float,
+        quantity: float,
+        fee: float,
+        entry_features: dict[str, float],
+    ) -> None:
+        if self.state is None or self.state.position is None:
+            return
+        position = self.state.position
+        previous_quantity = position.quantity
+        previous_notional = previous_quantity * position.entry_price
+        added_notional = quantity * price
+        total_quantity = previous_quantity + quantity
+        total_notional = previous_notional + added_notional
+
+        position.quantity = total_quantity
+        position.entry_price = safe_div(total_notional, total_quantity, position.entry_price)
+        position.entry_fee += fee
+        position.entry_time = min(position.entry_time, bar.timestamp)
+        position.entry_index = min(position.entry_index, self.current_index)
+        position.stop_loss = position.entry_price * (1.0 - self.backtest_config.stop_loss_pct)
+        position.take_profit = position.entry_price * (1.0 + self.backtest_config.take_profit_pct)
+        position.max_price = max(position.max_price, bar.high)
+        position.min_price = bar.low if position.min_price == 0.0 else min(position.min_price, bar.low)
+        position.entry_tags = list(dict.fromkeys(position.entry_tags + ["scale_in"]))
+        position.entry_reason = "manual_buy_scale_in"
+        position.entry_features = self._merge_entry_features(position.entry_features, entry_features, previous_quantity, quantity)
 
     def _sell(self, argument: str | None) -> bool:
         if self.state is None or self.state.position is None:
@@ -513,6 +552,26 @@ class InteractiveTraderSession:
     def _price_to_row(self, price: float, min_price: float, max_price: float, height: int) -> int:
         normalized = clamp((max_price - price) / max(max_price - min_price, 1e-12), 0.0, 1.0)
         return int(round(normalized * (height - 1)))
+
+    def _merge_entry_features(
+        self,
+        current: dict[str, float],
+        new: dict[str, float],
+        previous_quantity: float,
+        added_quantity: float,
+    ) -> dict[str, float]:
+        if not current:
+            return dict(new)
+        total = previous_quantity + added_quantity
+        if total <= 0:
+            return dict(new)
+        merged = dict(current)
+        for key, value in new.items():
+            if key not in merged:
+                merged[key] = value
+                continue
+            merged[key] = safe_div(merged[key] * previous_quantity + value * added_quantity, total, value)
+        return merged
 
     def _note(self, message: str) -> None:
         self._render_screen(message)
