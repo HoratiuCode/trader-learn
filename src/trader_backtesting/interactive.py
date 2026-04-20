@@ -8,10 +8,12 @@ try:
     from rich.console import Console
     from rich.panel import Panel
     from rich.table import Table
+    from rich.text import Text
 except Exception:  # pragma: no cover - rich is expected, but keep a fallback
     Console = None  # type: ignore[assignment]
     Panel = None  # type: ignore[assignment]
     Table = None  # type: ignore[assignment]
+    Text = None  # type: ignore[assignment]
 
 from .config import backtest_config_from_dict, load_app_config, strategy_config_from_dict
 from .data_loading import load_market_data, split_by_symbol, summarize_market_data
@@ -24,9 +26,6 @@ from .reporting import render_backtest_console, save_backtest_artifacts
 from .scoring import score_strategy
 from .strategies import MemeCoinStrategy
 from .utils import clamp, ensure_dir, format_currency, format_pct, safe_div
-
-
-BLOCKS = "▁▂▃▄▅▆▇█"
 
 
 @dataclass(slots=True)
@@ -360,10 +359,7 @@ class InteractiveTraderSession:
 
         bar = self.selected_bars[self.current_index]
         window = self.selected_bars[max(0, self.current_index - self.window_size + 1) : self.current_index + 1]
-        closes = [item.close for item in window]
-        volumes = [item.volume for item in window]
-        spark = self._sparkline(closes)
-        volume_spark = self._sparkline(volumes, low_char="▁", high_char="█")
+        chart = self._candlestick_chart(window)
         equity = self.state.cash
         position_value = 0.0
         unrealized = 0.0
@@ -391,7 +387,7 @@ class InteractiveTraderSession:
         if bar.liquidity is not None:
             metrics.add_row("Liquidity", f"{bar.liquidity:,.0f}")
         console.print(metrics)
-        console.print(Panel(f"{spark}\n{volume_spark}", title="Price / Volume Chart", border_style="cyan"))
+        console.print(Panel(chart, title="Candlestick Chart", border_style="cyan"))
         if self.state.position is not None:
             pos = self.state.position
             position_table = Table(title="Open Position")
@@ -436,21 +432,87 @@ class InteractiveTraderSession:
             "quit        exit and save the session report"
         )
 
-    def _sparkline(self, values: list[float], low_char: str = "▁", high_char: str = "█") -> str:
-        if not values:
-            return ""
-        if len(values) == 1:
-            return high_char
-        min_value = min(values)
-        max_value = max(values)
-        if abs(max_value - min_value) < 1e-12:
-            return high_char * len(values)
-        scale = len(BLOCKS) - 1
-        chars = []
-        for value in values:
-            normalized = clamp((value - min_value) / (max_value - min_value), 0.0, 1.0)
-            chars.append(BLOCKS[int(round(normalized * scale))])
-        return "".join(chars)
+    def _candlestick_chart(self, bars: list[MarketBar], height: int = 10) -> Any:
+        if not bars:
+            return "No chart data available."
+        if Text is None:
+            return self._candlestick_chart_plain(bars, height=height)
+
+        max_price = max(bar.high for bar in bars)
+        min_price = min(bar.low for bar in bars)
+        if abs(max_price - min_price) < 1e-12:
+            max_price += 1.0
+            min_price -= 1.0
+
+        width = len(bars) * 3
+        grid: list[list[tuple[str, str | None]]] = [[(" ", None) for _ in range(width)] for _ in range(height)]
+
+        for index, bar in enumerate(bars):
+            color = "green" if bar.close >= bar.open else "red"
+            x = index * 3 + 1
+            high_row = self._price_to_row(bar.high, min_price, max_price, height)
+            low_row = self._price_to_row(bar.low, min_price, max_price, height)
+            open_row = self._price_to_row(bar.open, min_price, max_price, height)
+            close_row = self._price_to_row(bar.close, min_price, max_price, height)
+            top_body = min(open_row, close_row)
+            bottom_body = max(open_row, close_row)
+
+            for row in range(high_row, low_row + 1):
+                grid[row][x] = ("│", color)
+            for row in range(top_body, bottom_body + 1):
+                grid[row][x] = ("█", color)
+            if open_row == close_row:
+                grid[open_row][x] = ("■", color)
+            else:
+                grid[open_row][x] = ("┤", color)
+                grid[close_row][x] = ("├", color)
+
+        chart = Text()
+        for row_index, row in enumerate(grid):
+            level = max_price - ((max_price - min_price) * row_index / max(height - 1, 1))
+            chart.append(f"{level:>8.4f} ")
+            for char, color in row:
+                if color:
+                    chart.append(char, style=color)
+                else:
+                    chart.append(char)
+            chart.append("\n")
+        chart.append("         Legend: ")
+        chart.append("green", style="green")
+        chart.append(" = bullish, ")
+        chart.append("red", style="red")
+        chart.append(" = bearish\n")
+        return chart
+
+    def _candlestick_chart_plain(self, bars: list[MarketBar], height: int = 10) -> str:
+        max_price = max(bar.high for bar in bars)
+        min_price = min(bar.low for bar in bars)
+        if abs(max_price - min_price) < 1e-12:
+            max_price += 1.0
+            min_price -= 1.0
+        width = len(bars) * 3
+        grid = [[" " for _ in range(width)] for _ in range(height)]
+        for index, bar in enumerate(bars):
+            x = index * 3 + 1
+            high_row = self._price_to_row(bar.high, min_price, max_price, height)
+            low_row = self._price_to_row(bar.low, min_price, max_price, height)
+            open_row = self._price_to_row(bar.open, min_price, max_price, height)
+            close_row = self._price_to_row(bar.close, min_price, max_price, height)
+            top_body = min(open_row, close_row)
+            bottom_body = max(open_row, close_row)
+            for row in range(high_row, low_row + 1):
+                grid[row][x] = "|"
+            for row in range(top_body, bottom_body + 1):
+                grid[row][x] = "#"
+        lines = []
+        for row_index, row in enumerate(grid):
+            level = max_price - ((max_price - min_price) * row_index / max(height - 1, 1))
+            lines.append(f"{level:>8.4f} {''.join(row)}")
+        return "\n".join(lines)
+
+    def _price_to_row(self, price: float, min_price: float, max_price: float, height: int) -> int:
+        normalized = clamp((max_price - price) / max(max_price - min_price, 1e-12), 0.0, 1.0)
+        return int(round(normalized * (height - 1)))
 
     def _note(self, message: str) -> None:
         self._render_screen(message)
