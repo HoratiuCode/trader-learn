@@ -63,6 +63,12 @@ Run the sample backtest:
 trader-backtesting backtest --data data/sample_market_data.csv --config config/sample_config.json --output-dir outputs/backtest
 ```
 
+Start the interactive memelearn session:
+
+```bash
+trader-backtesting start --data data/sample_market_data.csv --config config/sample_config.json --output-dir outputs/interactive
+```
+
 Render a saved report:
 
 ```bash
@@ -91,10 +97,21 @@ trader-backtesting suggest-patterns --model outputs/ml/ml_model.json
 
 - `load-data`
 - `backtest`
+- `start`
 - `report`
 - `analyze-failures`
 - `train-model`
 - `suggest-patterns`
+
+## Default launcher
+
+Double-click `~/Documents/memelearn.command` to:
+
+- open the project folder
+- start the interactive session
+- choose a budget
+- select a memecoin
+- trade with `buy`, `sell`, `next`, and `chart`
 
 ## Example dataset format
 

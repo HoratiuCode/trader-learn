@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import argparse
+from pathlib import Path
 
 from .config import backtest_config_from_dict, load_app_config, strategy_config_from_dict
 from .data_loading import load_market_data, save_normalized_market_data, summarize_market_data
+from .interactive import run_interactive_session
 from .metrics import compute_metrics
 from .ml_analysis import train_pattern_model
 from .pattern_analysis import analyze_failures
@@ -31,6 +33,14 @@ def build_parser() -> argparse.ArgumentParser:
     backtest_cmd.add_argument("--data", required=True, help="Path to CSV or JSON market data")
     backtest_cmd.add_argument("--config", help="Optional JSON config file")
     backtest_cmd.add_argument("--output-dir", default="outputs", help="Directory for generated artifacts")
+
+    start_cmd = subparsers.add_parser("start", help="Start the interactive memelearn trading session")
+    start_cmd.add_argument("--data", default="data/sample_market_data.csv", help="Path to CSV or JSON market data")
+    start_cmd.add_argument("--config", default="config/sample_config.json", help="Optional JSON config file")
+    start_cmd.add_argument("--output-dir", default="outputs/interactive", help="Directory for generated artifacts")
+    start_cmd.add_argument("--symbol", help="Preselect a symbol instead of prompting")
+    start_cmd.add_argument("--budget", type=float, help="Preselect a starting budget instead of prompting")
+    start_cmd.add_argument("--window-size", type=int, default=20, help="Candles to show in the live chart")
 
     report_cmd = subparsers.add_parser("report", help="Render a report from a saved summary JSON")
     report_cmd.add_argument("--summary", required=True, help="Path to backtest_summary.json")
@@ -80,6 +90,17 @@ def cmd_backtest(args: argparse.Namespace) -> None:
     print(f"Saved summary to {paths['summary_json']}")
     print(f"Saved trade log to {paths['trade_log_json']}")
     print(f"Saved report to {paths['report_md']}")
+
+
+def cmd_start(args: argparse.Namespace) -> None:
+    run_interactive_session(
+        data_path=args.data,
+        config_path=args.config,
+        output_dir=args.output_dir,
+        symbol=args.symbol,
+        budget=args.budget,
+        window_size=args.window_size,
+    )
 
 
 def cmd_report(args: argparse.Namespace) -> None:
