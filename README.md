@@ -134,6 +134,18 @@ timestamp,symbol,open,high,low,close,volume,liquidity,market_cap
 2026-04-20T00:00:00+00:00,MEME,0.99,1.02,0.98,1.00,1000,50000,92500
 ```
 
+The bundled sample dataset now includes multiple memecoins with different behavior profiles:
+
+- `PUPILO` - trend breakout
+- `DECODE` - fake breakout
+- `COFFE67` - vertical pump and dump
+- `NULLO` - unstable reversal
+- `VIBE7` - trend pullback continuation
+- `GLITCH` - chop
+- `BOUNCE9` - breakout continuation
+- `ZAZA` - exhaustion recovery
+- `MEME` - breakout continuation
+
 ## Architecture
 
 The code is intentionally modular:

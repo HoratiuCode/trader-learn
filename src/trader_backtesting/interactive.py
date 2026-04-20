@@ -425,6 +425,9 @@ class InteractiveTraderSession:
         metrics.add_row("Volume", f"{bar.volume:,.0f}")
         if bar.liquidity is not None:
             metrics.add_row("Liquidity", f"{bar.liquidity:,.0f}")
+        pattern_type = bar.raw.get("chart_type") or bar.raw.get("scenario")
+        if pattern_type:
+            metrics.add_row("Pattern", str(pattern_type))
         console.print(metrics)
         console.print(Panel(chart, title="Candlestick Chart", border_style="cyan"))
         if self.state.position is not None:

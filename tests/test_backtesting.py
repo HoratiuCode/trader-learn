@@ -28,7 +28,9 @@ class BacktestingIntegrationTests(unittest.TestCase):
         bars = load_market_data(ROOT / "data" / "sample_market_data.csv")
         summary = summarize_market_data(bars)
         self.assertGreater(summary.count, 0)
-        self.assertEqual(summary.symbols, ["MEME"])
+        self.assertGreaterEqual(len(summary.symbols), 5)
+        self.assertIn("PUPILO", summary.symbols)
+        self.assertIn("MEME", summary.symbols)
 
     def test_backtest_pipeline(self) -> None:
         bars = load_market_data(ROOT / "data" / "sample_market_data.csv")

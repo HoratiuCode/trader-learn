@@ -16,6 +16,12 @@ class Scenario:
     wick: float
 
 
+@dataclass(frozen=True)
+class MemeCoinSpec:
+    symbol: str
+    scenario: Scenario
+
+
 SCENARIOS = [
     Scenario(
         name="trend_breakout",
@@ -76,16 +82,30 @@ SCENARIOS = [
 ]
 
 
+MEMECOINS = [
+    MemeCoinSpec(symbol="PUPILO", scenario=SCENARIOS[0]),
+    MemeCoinSpec(symbol="DECODE", scenario=SCENARIOS[1]),
+    MemeCoinSpec(symbol="COFFE67", scenario=SCENARIOS[2]),
+    MemeCoinSpec(symbol="NULLO", scenario=SCENARIOS[3]),
+    MemeCoinSpec(symbol="VIBE7", scenario=SCENARIOS[4]),
+    MemeCoinSpec(symbol="GLITCH", scenario=SCENARIOS[5]),
+    MemeCoinSpec(symbol="BOUNCE9", scenario=SCENARIOS[6]),
+    MemeCoinSpec(symbol="ZAZA", scenario=SCENARIOS[7]),
+    MemeCoinSpec(symbol="MEME", scenario=SCENARIOS[6]),
+]
+
+
 def build_rows() -> list[dict[str, object]]:
     rows: list[dict[str, object]] = []
-    timestamp = datetime(2026, 4, 20, 0, 0, tzinfo=timezone.utc)
-    previous_close = 0.99
-    for scenario in SCENARIOS:
-        for close, volume, liquidity in zip(scenario.closes, scenario.volumes, scenario.liquidities):
+    base_timestamp = datetime(2026, 4, 20, 0, 0, tzinfo=timezone.utc)
+    for coin_index, coin in enumerate(MEMECOINS):
+        timestamp = base_timestamp + timedelta(days=coin_index)
+        previous_close = coin.scenario.closes[0] * 0.98
+        for close, volume, liquidity in zip(coin.scenario.closes, coin.scenario.volumes, coin.scenario.liquidities):
             open_price = previous_close
             body = close - open_price
             direction = 1 if body >= 0 else -1
-            wick = scenario.wick
+            wick = coin.scenario.wick
             high = max(open_price, close) * (1.0 + wick + abs(body) * 0.015)
             low = min(open_price, close) * (1.0 - wick - abs(body) * 0.010)
             if direction < 0:
@@ -94,7 +114,7 @@ def build_rows() -> list[dict[str, object]]:
             rows.append(
                 {
                     "timestamp": timestamp.isoformat(),
-                    "symbol": "MEME",
+                    "symbol": coin.symbol,
                     "open": round(open_price, 6),
                     "high": round(high, 6),
                     "low": round(low, 6),
@@ -102,7 +122,8 @@ def build_rows() -> list[dict[str, object]]:
                     "volume": round(volume, 2),
                     "liquidity": round(liquidity, 2),
                     "market_cap": round(market_cap, 2),
-                    "scenario": scenario.name,
+                    "scenario": coin.scenario.name,
+                    "chart_type": coin.scenario.name,
                 }
             )
             timestamp += timedelta(minutes=1)
@@ -155,7 +176,7 @@ def main() -> None:
     }
     (root / "config").mkdir(parents=True, exist_ok=True)
     (root / "config" / "sample_config.json").write_text(json.dumps(sample_config, indent=2), encoding="utf-8")
-    print(f"Wrote {len(rows)} sample bars to data/sample_market_data.csv and data/sample_market_data.json")
+    print(f"Wrote {len(rows)} sample bars across {len(MEMECOINS)} memecoins to data/sample_market_data.csv and data/sample_market_data.json")
 
 
 if __name__ == "__main__":
