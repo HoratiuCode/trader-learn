@@ -166,8 +166,8 @@ class InteractiveTraderSession:
             return True
         if action in {"next", "n"}:
             if self.current_index >= len(self.selected_bars) - 1:
-                self._note("End of data reached. Finalizing the session.")
-                return False
+                self._render_screen("End of data reached. Staying on the last candle.")
+                return True
             self.current_index = min(self.current_index + 1, len(self.selected_bars) - 1)
             self._append_equity_point("next")
             self._render_screen("Moved to the next candle.")
