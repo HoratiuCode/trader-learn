@@ -137,9 +137,7 @@ class InteractiveTraderSession:
         self.state = InteractiveSessionState(cash=float(self.initial_budget))
         self.current_index = 0
         self._append_equity_point("session_start")
-        self._render_screen(
-            "Session ready. Use settings, buy, sell, next, chart, status, help, or quit."
-        )
+        self._render_screen("Session ready. Use buy, sell, help, then settings, or quit.")
         while self.current_index < len(self.selected_bars):
             bar = self.selected_bars[self.current_index]
             if self._skip_auto_manage_once:
@@ -533,13 +531,13 @@ class InteractiveTraderSession:
             return
         console.print(
             "[bold]Commands:[/bold] "
-            f"[{self.theme.command_color}]settings[/{self.theme.command_color}], "
             f"[green]buy[/green] [amount|%|all], "
             f"[red]sell[/red] [amount|%|all], "
             f"[cyan]next[/cyan], "
             f"[cyan]chart[/cyan], "
             f"[cyan]status[/cyan], "
             f"[cyan]help[/cyan], "
+            f"[{self.theme.command_color}]settings[/{self.theme.command_color}], "
             f"[cyan]quit[/cyan]"
         )
 
@@ -548,7 +546,6 @@ class InteractiveTraderSession:
         if console is None:
             return
         console.print(
-            "settings     change chart and terminal colors\n"
             "buy 1000    buy with $1000\n"
             "buy 25%     buy using 25% of available cash\n"
             "sell all    close the open position\n"
@@ -557,6 +554,8 @@ class InteractiveTraderSession:
             "next        move forward the default step size\n"
             "chart       redraw the chart\n"
             "status      redraw the portfolio status\n"
+            "help        show commands\n"
+            "settings    change chart and terminal colors\n"
             "quit        exit and save the session report"
         )
 
