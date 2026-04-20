@@ -1,29 +1,30 @@
 {
   "clusters": [
     {
-      "average_loss": -3.7444,
+      "average_loss": -2.4963,
       "characteristics": {
-        "body_bucket": "low",
-        "close_location_bucket": "low",
-        "distance_bucket": "low",
-        "entry_reason": "manual_buy_scale_in",
-        "liquidity_bucket": "mid",
-        "momentum_bucket": "low",
-        "volatility_bucket": "mid",
+        "body_bucket": "mid",
+        "close_location_bucket": "mid",
+        "distance_bucket": "mid",
+        "entry_reason": "manual_buy",
+        "liquidity_bucket": "low",
+        "momentum_bucket": "mid",
+        "volatility_bucket": "low",
         "volume_bucket": "low"
       },
       "count": 1,
-      "key": "generic_loss|liq=mid|vol=low|var=mid",
-      "label": "loss cluster around mid-liquidity / low-volume entries",
+      "key": "chop_entry|liq=low|vol=low|var=low",
+      "label": "strategy gets chopped up in low-energy conditions",
       "sample_reasons": [
-        "manual_buy_scale_in"
+        "manual_buy"
       ],
-      "total_loss": 3.7444,
+      "total_loss": 2.4963,
       "win_rate_against": 0.0
     }
   ],
   "recommendations": [
-    "Collect more labeled trades to refine failure clustering."
+    "Separate trend days from chop days before trading.",
+    "Avoid signals when volatility and volume are both muted."
   ],
-  "summary": "Primary weakness: loss cluster around mid-liquidity / low-volume entries (1 trades, 3.74 total loss)."
+  "summary": "Primary weakness: strategy gets chopped up in low-energy conditions (1 trades, 2.50 total loss)."
 }

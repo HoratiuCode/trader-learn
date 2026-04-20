@@ -1,9 +1,10 @@
 # Failure Analysis
 
-Primary weakness: loss cluster around mid-liquidity / low-volume entries (1 trades, 3.74 total loss).
+Primary weakness: strategy gets chopped up in low-energy conditions (1 trades, 2.50 total loss).
 
 ## Clusters
-- loss cluster around mid-liquidity / low-volume entries: 1 trades, loss=$3.74
+- strategy gets chopped up in low-energy conditions: 1 trades, loss=$2.50
 
 ## Recommendations
-- Collect more labeled trades to refine failure clustering.
+- Separate trend days from chop days before trading.
+- Avoid signals when volatility and volume are both muted.

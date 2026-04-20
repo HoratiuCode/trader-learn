@@ -1,21 +1,50 @@
 {
-  "failure_report": null,
+  "failure_report": {
+    "clusters": [
+      {
+        "average_loss": -2.4963,
+        "characteristics": {
+          "body_bucket": "mid",
+          "close_location_bucket": "mid",
+          "distance_bucket": "mid",
+          "entry_reason": "manual_buy",
+          "liquidity_bucket": "low",
+          "momentum_bucket": "mid",
+          "volatility_bucket": "low",
+          "volume_bucket": "low"
+        },
+        "count": 1,
+        "key": "chop_entry|liq=low|vol=low|var=low",
+        "label": "strategy gets chopped up in low-energy conditions",
+        "sample_reasons": [
+          "manual_buy"
+        ],
+        "total_loss": 2.4963,
+        "win_rate_against": 0.0
+      }
+    ],
+    "recommendations": [
+      "Separate trend days from chop days before trading.",
+      "Avoid signals when volatility and volume are both muted."
+    ],
+    "summary": "Primary weakness: strategy gets chopped up in low-energy conditions (1 trades, 2.50 total loss)."
+  },
   "metrics": {
-    "average_loss": 0.0,
+    "average_loss": -2.4962556165750853,
     "average_win": 0.0,
-    "avg_bars_held": 0.0,
-    "avg_mae": 0.0,
-    "avg_mfe": 0.0,
-    "consecutive_losses": 0.0,
-    "expectancy": 0.0,
-    "final_equity": 1000.0,
+    "avg_bars_held": 1.0,
+    "avg_mae": 0.03940040858956964,
+    "avg_mfe": 0.016963511787533456,
+    "consecutive_losses": 1.0,
+    "expectancy": -2.4962556165750853,
+    "final_equity": 997.5037443834249,
     "initial_capital": 1000.0,
-    "max_drawdown": 0.0,
+    "max_drawdown": 0.0024962556165751266,
     "profit_factor": 0.0,
-    "recovery_factor": 0.0,
-    "sharpe_like": 0.0,
-    "total_return": 0.0,
-    "trade_frequency": 0.0,
+    "recovery_factor": -1.0,
+    "sharpe_like": -56959.240510361844,
+    "total_return": -0.0024962556165751266,
+    "trade_frequency": 0.3333333333333333,
     "win_rate": 0.0
   },
   "model": null,
@@ -64,43 +93,126 @@
         "timestamp": "2026-04-26T00:00:00+00:00"
       },
       {
-        "cash": 1000.0,
-        "equity": 1000.0,
-        "label": "next",
-        "position_value": 0.0,
+        "cash": 499.5,
+        "equity": 998.7511233150274,
+        "label": "buy",
+        "position_value": 499.2511233150274,
         "symbol": "BOUNCE9",
-        "timestamp": "2026-04-26T00:01:00+00:00"
+        "timestamp": "2026-04-26T00:00:00+00:00"
       },
       {
-        "cash": 1000.0,
-        "equity": 1000.0,
+        "cash": 997.5037443834249,
+        "equity": 997.5037443834249,
         "label": "session_end",
         "position_value": 0.0,
         "symbol": "BOUNCE9",
-        "timestamp": "2026-04-26T00:01:00+00:00"
+        "timestamp": "2026-04-26T00:00:00+00:00"
       }
     ],
-    "final_equity": 1000.0,
+    "final_equity": 997.5037443834249,
     "initial_capital": 1000.0,
     "notes": [
       "Interactive session started from the launcher."
     ],
     "strategy_name": "InteractiveSession:BOUNCE9",
-    "trades": []
+    "trades": [
+      {
+        "bars_held": 1,
+        "entry_features": {
+          "body_pct": 0.3543054634771923,
+          "candle_direction": 1.0,
+          "close": 1.63,
+          "close_location": 0.6724630750671109,
+          "distance_to_rolling_max_1": 0.0,
+          "distance_to_rolling_max_10": 0.0,
+          "distance_to_rolling_max_3": 0.0,
+          "distance_to_rolling_max_5": 0.0,
+          "distance_to_rolling_min_1": 0.0,
+          "distance_to_rolling_min_10": 0.0,
+          "distance_to_rolling_min_3": 0.0,
+          "distance_to_rolling_min_5": 0.0,
+          "high": 1.660137,
+          "index": 0.0,
+          "liquidity": 47000.0,
+          "liquidity_change_1": 0.0,
+          "liquidity_change_10": 0.0,
+          "liquidity_change_3": 0.0,
+          "liquidity_change_5": 0.0,
+          "liquidity_ratio_1": 0.0,
+          "liquidity_ratio_10": 0.0,
+          "liquidity_ratio_3": 0.0,
+          "liquidity_ratio_5": 0.0,
+          "low": 1.568126,
+          "lower_wick_pct": 0.3181576115899186,
+          "market_cap": 86950.0,
+          "momentum_1": 0.0,
+          "momentum_10": 0.0,
+          "momentum_3": 0.0,
+          "momentum_5": 0.0,
+          "open": 1.5974,
+          "range_pct": 0.05644846625766876,
+          "return_1": 0.0,
+          "return_10": 0.0,
+          "return_3": 0.0,
+          "return_5": 0.0,
+          "trend_strength_1": 0.0,
+          "trend_strength_10": 0.0,
+          "trend_strength_3": 0.0,
+          "trend_strength_5": 0.0,
+          "upper_wick_pct": 0.3275369249328891,
+          "volatility_1": 0.0,
+          "volatility_10": 0.0,
+          "volatility_3": 0.0,
+          "volatility_5": 0.0,
+          "volume": 1400.0,
+          "volume_change_1": 0.0,
+          "volume_change_10": 0.0,
+          "volume_change_3": 0.0,
+          "volume_change_5": 0.0,
+          "volume_ratio_1": 0.0,
+          "volume_ratio_10": 0.0,
+          "volume_ratio_3": 0.0,
+          "volume_ratio_5": 0.0
+        },
+        "entry_index": 0,
+        "entry_price": 1.632445,
+        "entry_reason": "manual_buy",
+        "entry_tags": [
+          "manual"
+        ],
+        "entry_time": "2026-04-26T00:00:00+00:00",
+        "exit_index": 0,
+        "exit_price": 1.627555,
+        "exit_reason": "end_of_session",
+        "exit_time": "2026-04-26T00:00:00+00:00",
+        "fees": 0.998502246630055,
+        "gross_pnl": -1.4977533699450305,
+        "max_adverse_excursion_pct": 0.03940040858956964,
+        "max_favorable_excursion_pct": 0.016963511787533456,
+        "net_pnl": -2.4962556165750853,
+        "quantity": 306.2890327086058,
+        "return_pct": -0.004992511233150171,
+        "slippage_cost": 1.4977533699450332,
+        "symbol": "BOUNCE9",
+        "trade_id": 1
+      }
+    ]
   },
   "score": {
     "components": {
       "consistency": 20.0,
-      "discipline": 76.0,
-      "drawdown_control": 100.0,
-      "profitability": 50.0,
-      "risk_control": 100.0,
-      "timing": 51.0
+      "discipline": 0.0,
+      "drawdown_control": 99.45,
+      "profitability": 49.7,
+      "risk_control": 0.0,
+      "timing": 45.39
     },
     "notes": [
       "Strategy is not profitable on the sample period.",
-      "Win rate is below a disciplined threshold."
+      "Trading frequency is high relative to the sample size.",
+      "Win rate is below a disciplined threshold.",
+      "Adverse excursion is larger than favorable excursion on average."
     ],
-    "total_score": 64.2
+    "total_score": 35.88
   }
 }

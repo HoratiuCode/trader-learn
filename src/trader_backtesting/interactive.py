@@ -64,6 +64,7 @@ class InteractiveTraderSession:
         self.feature_rows: list[dict[str, Any]] = []
         self.state: InteractiveSessionState | None = None
         self.current_index = 0
+        self._skip_auto_manage_once = False
 
     def run(self) -> None:
         self._show_header()
@@ -79,7 +80,9 @@ class InteractiveTraderSession:
         self._render_screen("Session ready. Use buy, sell, next, chart, status, help, or quit.")
         while self.current_index < len(self.selected_bars):
             bar = self.selected_bars[self.current_index]
-            if self._auto_manage_position(bar):
+            if self._skip_auto_manage_once:
+                self._skip_auto_manage_once = False
+            elif self._auto_manage_position(bar):
                 self._append_equity_point("auto_exit")
             command = self._prompt_command()
             if not self._handle_command(command):
@@ -226,6 +229,7 @@ class InteractiveTraderSession:
             )
             buy_message = f"Added {quantity:.6f} {bar.symbol} at {format_currency(price)}."
         self._append_equity_point("buy")
+        self._skip_auto_manage_once = True
         self._render_screen(buy_message)
         return True
 
