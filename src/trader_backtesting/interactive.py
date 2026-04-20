@@ -45,7 +45,8 @@ class InteractiveTraderSession:
         *,
         output_dir: str | Path,
         config: BacktestConfig,
-        window_size: int = 20,
+        window_size: int = 30,
+        step_size: int = 3,
         symbol: str | None = None,
         budget: float | None = None,
     ) -> None:
@@ -56,6 +57,7 @@ class InteractiveTraderSession:
         self.output_dir = ensure_dir(output_dir)
         self.backtest_config = config
         self.window_size = max(5, window_size)
+        self.step_size = max(1, step_size)
         self.symbol = symbol
         self.initial_budget = budget
         self.all_bars = bars
@@ -168,12 +170,16 @@ class InteractiveTraderSession:
             self._sell(argument)
             return True
         if action in {"next", "n"}:
+            jump = self._resolve_step(argument)
             if self.current_index >= len(self.selected_bars) - 1:
                 self._render_screen("End of data reached. Staying on the last candle.")
                 return True
-            self.current_index = min(self.current_index + 1, len(self.selected_bars) - 1)
+            self.current_index = min(self.current_index + jump, len(self.selected_bars) - 1)
             self._append_equity_point("next")
-            self._render_screen("Moved to the next candle.")
+            if jump == 1:
+                self._render_screen("Moved to the next candle.")
+            else:
+                self._render_screen(f"Moved forward {jump} candles.")
             return True
         if action in {"quit", "exit", "q"}:
             return False
@@ -371,6 +377,15 @@ class InteractiveTraderSession:
         except ValueError:
             return 0.0
 
+    def _resolve_step(self, argument: str | None) -> int:
+        if argument is None:
+            return self.step_size
+        try:
+            value = int(float(argument))
+        except ValueError:
+            return self.step_size
+        return max(1, value)
+
     def _append_equity_point(self, label: str) -> None:
         if self.state is None:
             return
@@ -473,7 +488,8 @@ class InteractiveTraderSession:
             "buy 25%     buy using 25% of available cash\n"
             "sell all    close the open position\n"
             "sell 50%    close half the open position\n"
-            "next        move to the next candle\n"
+            "next 5      move forward 5 candles\n"
+            "next        move forward the default step size\n"
             "chart       redraw the chart\n"
             "status      redraw the portfolio status\n"
             "quit        exit and save the session report"
@@ -617,7 +633,8 @@ def run_interactive_session(
     output_dir: str | Path = "outputs/interactive",
     symbol: str | None = None,
     budget: float | None = None,
-    window_size: int = 20,
+    window_size: int = 30,
+    step_size: int = 3,
 ) -> None:
     config_payload = load_app_config(config_path) if config_path else load_app_config(None)
     backtest_config = backtest_config_from_dict(config_payload["backtest"])
@@ -630,6 +647,7 @@ def run_interactive_session(
         output_dir=output_dir,
         config=backtest_config,
         window_size=window_size,
+        step_size=step_size,
         symbol=symbol,
         budget=budget,
     )

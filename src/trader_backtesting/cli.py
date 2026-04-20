@@ -40,7 +40,8 @@ def build_parser() -> argparse.ArgumentParser:
     start_cmd.add_argument("--output-dir", default="outputs/interactive", help="Directory for generated artifacts")
     start_cmd.add_argument("--symbol", help="Preselect a symbol instead of prompting")
     start_cmd.add_argument("--budget", type=float, help="Preselect a starting budget instead of prompting")
-    start_cmd.add_argument("--window-size", type=int, default=20, help="Candles to show in the live chart")
+    start_cmd.add_argument("--window-size", type=int, default=30, help="Candles to show in the live chart")
+    start_cmd.add_argument("--step-size", type=int, default=3, help="Default candles to move on next")
 
     report_cmd = subparsers.add_parser("report", help="Render a report from a saved summary JSON")
     report_cmd.add_argument("--summary", required=True, help="Path to backtest_summary.json")
@@ -100,6 +101,7 @@ def cmd_start(args: argparse.Namespace) -> None:
         symbol=args.symbol,
         budget=args.budget,
         window_size=args.window_size,
+        step_size=args.step_size,
     )
 
 
