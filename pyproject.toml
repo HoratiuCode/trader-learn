@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "trader-backtesting"
+version = "0.1.0"
+description = "Terminal-based backtesting toolkit for meme coin trading strategies"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "rich>=13.0.0",
+]
+
+[project.scripts]
+trader-backtesting = "trader_backtesting.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

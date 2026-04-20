@@ -1,0 +1,21 @@
+{
+  "columns": [
+    "timestamp",
+    "symbol",
+    "open",
+    "high",
+    "low",
+    "close",
+    "volume",
+    "liquidity",
+    "market_cap"
+  ],
+  "count": 80,
+  "end": "2026-04-20T01:19:00+00:00",
+  "missing_liquidity": 0,
+  "missing_market_cap": 0,
+  "start": "2026-04-20T00:00:00+00:00",
+  "symbols": [
+    "MEME"
+  ]
+}

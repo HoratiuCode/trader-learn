@@ -1,0 +1,25 @@
+{
+  "backtest": {
+    "initial_capital": 10000.0,
+    "risk_per_trade": 0.02,
+    "fee_rate": 0.001,
+    "slippage_rate": 0.0015,
+    "stop_loss_pct": 0.04,
+    "take_profit_pct": 0.08,
+    "max_position_pct": 0.25,
+    "max_holding_bars": 18,
+    "min_confidence": 0.55,
+    "exit_on_weak_signal": true
+  },
+  "strategy": {
+    "breakout_lookback": 5,
+    "volume_spike_multiplier": 1.35,
+    "liquidity_floor": 0.85,
+    "trend_lookback": 5,
+    "pullback_depth": 0.03,
+    "reversal_body_ratio": 0.55,
+    "volatility_floor": 0.008,
+    "volatility_ceiling": 0.09,
+    "exit_momentum_threshold": -0.004
+  }
+}

@@ -1,0 +1,265 @@
+{
+  "bias": 0.6061358035703155,
+  "feature_rankings": [
+    {
+      "direction": "positive",
+      "feature": "max_favorable_excursion_pct",
+      "importance": 1.901865,
+      "mean_loss": 0.025343,
+      "mean_win": 0.112013,
+      "support": 15,
+      "weight": 1.901865
+    },
+    {
+      "direction": "positive",
+      "feature": "liquidity_change_5",
+      "importance": 1.327753,
+      "mean_loss": -0.004832,
+      "mean_win": 0.010121,
+      "support": 15,
+      "weight": 1.327753
+    },
+    {
+      "direction": "positive",
+      "feature": "liquidity_ratio_5",
+      "importance": 1.192008,
+      "mean_loss": 0.999373,
+      "mean_win": 1.034916,
+      "support": 15,
+      "weight": 1.192008
+    },
+    {
+      "direction": "negative",
+      "feature": "upper_wick_pct",
+      "importance": 1.164228,
+      "mean_loss": 0.331991,
+      "mean_win": 0.242565,
+      "support": 15,
+      "weight": -1.164228
+    },
+    {
+      "direction": "positive",
+      "feature": "body_pct",
+      "importance": 1.157995,
+      "mean_loss": 0.345584,
+      "mean_win": 0.530253,
+      "support": 15,
+      "weight": 1.157995
+    },
+    {
+      "direction": "negative",
+      "feature": "lower_wick_pct",
+      "importance": 1.15151,
+      "mean_loss": 0.322425,
+      "mean_win": 0.227182,
+      "support": 15,
+      "weight": -1.15151
+    },
+    {
+      "direction": "positive",
+      "feature": "volume_ratio_5",
+      "importance": 1.015359,
+      "mean_loss": 1.082429,
+      "mean_win": 1.790242,
+      "support": 15,
+      "weight": 1.015359
+    },
+    {
+      "direction": "positive",
+      "feature": "distance_to_rolling_max_5",
+      "importance": 0.876205,
+      "mean_loss": 0.022781,
+      "mean_win": 0.054863,
+      "support": 15,
+      "weight": 0.876205
+    },
+    {
+      "direction": "positive",
+      "feature": "return_1",
+      "importance": 0.80472,
+      "mean_loss": 0.027697,
+      "mean_win": 0.055491,
+      "support": 15,
+      "weight": 0.80472
+    },
+    {
+      "direction": "positive",
+      "feature": "volume_change_5",
+      "importance": 0.777902,
+      "mean_loss": 0.035119,
+      "mean_win": 0.173524,
+      "support": 15,
+      "weight": 0.777902
+    }
+  ],
+  "feature_stats": {
+    "body_pct": {
+      "mean": 0.4686964662085917,
+      "mean_loss": 0.3455837125564902,
+      "mean_win": 0.5302528430346425,
+      "std": 0.15947323282177533,
+      "support": 15.0
+    },
+    "distance_to_rolling_max_5": {
+      "mean": 0.04416894995918099,
+      "mean_loss": 0.02278092787867506,
+      "mean_win": 0.054862960999433955,
+      "std": 0.036614740779256534,
+      "support": 15.0
+    },
+    "distance_to_rolling_min_5": {
+      "mean": 0.16989530141327444,
+      "mean_loss": 0.17449653466670428,
+      "mean_win": 0.16759468478655953,
+      "std": 0.15148572975246016,
+      "support": 15.0
+    },
+    "liquidity_change_5": {
+      "mean": 0.005136496613190634,
+      "mean_loss": -0.004832083079037516,
+      "mean_win": 0.010120786459304709,
+      "std": 0.011261789505995209,
+      "support": 15.0
+    },
+    "liquidity_ratio_5": {
+      "mean": 1.0230686300367409,
+      "mean_loss": 0.9993732811810463,
+      "mean_win": 1.0349163044645882,
+      "std": 0.029817765797900794,
+      "support": 15.0
+    },
+    "lower_wick_pct": {
+      "mean": 0.2589297416972432,
+      "mean_loss": 0.3224248560670061,
+      "mean_win": 0.22718218451236175,
+      "std": 0.08271113116429628,
+      "support": 15.0
+    },
+    "max_adverse_excursion_pct": {
+      "mean": 0.06730130917238825,
+      "mean_loss": 0.057150606809890446,
+      "mean_win": 0.07237666035363716,
+      "std": 0.03393930181845794,
+      "support": 15.0
+    },
+    "max_favorable_excursion_pct": {
+      "mean": 0.08312300738945011,
+      "mean_loss": 0.025342694582834283,
+      "mean_win": 0.11201316379275802,
+      "std": 0.045571309411602805,
+      "support": 15.0
+    },
+    "momentum_3": {
+      "mean": 0.16133333333333336,
+      "mean_loss": 0.13200000000000003,
+      "mean_win": 0.17600000000000002,
+      "std": 0.13970763122400373,
+      "support": 15.0
+    },
+    "range_pct": {
+      "mean": 0.08153023699184614,
+      "mean_loss": 0.060620236991554055,
+      "mean_win": 0.09198523699199218,
+      "std": 0.04483354355581554,
+      "support": 15.0
+    },
+    "return_1": {
+      "mean": 0.04622650099057942,
+      "mean_loss": 0.027696660428204782,
+      "mean_win": 0.05549142127176674,
+      "std": 0.03453964682499428,
+      "support": 15.0
+    },
+    "return_3": {
+      "mean": 0.12529534353973149,
+      "mean_loss": 0.09867575388628226,
+      "mean_win": 0.1386051383664561,
+      "std": 0.11106666931677653,
+      "support": 15.0
+    },
+    "return_5": {
+      "mean": 0.15807535564610667,
+      "mean_loss": 0.17202739886423515,
+      "mean_win": 0.15109933403704243,
+      "std": 0.15644614791745884,
+      "support": 15.0
+    },
+    "trend_strength_5": {
+      "mean": 0.11015299433178774,
+      "mean_loss": 0.09204813749676222,
+      "mean_win": 0.1192054227493005,
+      "std": 0.09458935082511338,
+      "support": 15.0
+    },
+    "upper_wick_pct": {
+      "mean": 0.2723737920941651,
+      "mean_loss": 0.3319914313765037,
+      "mean_win": 0.24256497245299583,
+      "std": 0.07681182649629571,
+      "support": 15.0
+    },
+    "volatility_5": {
+      "mean": 0.020634086801212655,
+      "mean_loss": 0.016777683377423774,
+      "mean_win": 0.022562288513107098,
+      "std": 0.01342789453446236,
+      "support": 15.0
+    },
+    "volume_change_5": {
+      "mean": 0.12738886476977754,
+      "mean_loss": 0.03511904486673325,
+      "mean_win": 0.1735237747212997,
+      "std": 0.17792049266002616,
+      "support": 15.0
+    },
+    "volume_ratio_5": {
+      "mean": 1.554304497813221,
+      "mean_loss": 1.0824290448636105,
+      "mean_win": 1.7902422242880263,
+      "std": 0.697106436129273,
+      "support": 15.0
+    }
+  },
+  "feature_weights": {
+    "body_pct": 1.1579945249152597,
+    "distance_to_rolling_max_5": 0.8762053871738574,
+    "distance_to_rolling_min_5": -0.04556105642044915,
+    "liquidity_change_5": 1.3277525326132291,
+    "liquidity_ratio_5": 1.1920082652887471,
+    "lower_wick_pct": -1.151509720807174,
+    "max_adverse_excursion_pct": 0.4486260096094846,
+    "max_favorable_excursion_pct": 1.901864798904742,
+    "momentum_3": 0.31494342588524377,
+    "range_pct": 0.699587797725385,
+    "return_1": 0.8047204704898299,
+    "return_3": 0.35950825504895684,
+    "return_5": -0.1337716850544278,
+    "trend_strength_5": 0.2871072167811945,
+    "upper_wick_pct": -1.1642277368293088,
+    "volatility_5": 0.43079018239510874,
+    "volume_change_5": 0.7779021279973231,
+    "volume_ratio_5": 1.0153588358107732
+  },
+  "label_stats": {
+    "losses": 5.0,
+    "trades": 15.0,
+    "win_rate": 0.6666666666666666,
+    "wins": 10.0
+  },
+  "model_name": "LinearPatternBiasModel",
+  "pattern_summary": {
+    "trend_continuation": {
+      "average_pnl": 30.96685757421044,
+      "count": 5,
+      "win_rate": 0.4
+    },
+    "vertical_pump": {
+      "average_pnl": 140.11531839172363,
+      "count": 10,
+      "win_rate": 0.8
+    }
+  },
+  "recommendations": [
+    "Add wick exhaustion features to identify failed pump candles."
+  ]
+}

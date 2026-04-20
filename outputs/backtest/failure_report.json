@@ -1,0 +1,75 @@
+{
+  "clusters": [
+    {
+      "average_loss": -115.3141,
+      "characteristics": {
+        "body_bucket": "mid",
+        "close_location_bucket": "mid",
+        "distance_bucket": "high",
+        "entry_reason": "breakout above recent high on expanded volume; volume expansion; liquidity is supportive",
+        "liquidity_bucket": "mid",
+        "momentum_bucket": "high",
+        "volatility_bucket": "mid",
+        "volume_bucket": "high"
+      },
+      "count": 2,
+      "key": "three_candle_vertical_pump|liq=mid|vol=high|var=mid",
+      "label": "strategy loses often after 3-candle vertical pumps",
+      "sample_reasons": [
+        "breakout above recent high on expanded volume; volume expansion; liquidity is supportive",
+        "breakout above recent high on expanded volume; volume expansion; liquidity is supportive"
+      ],
+      "total_loss": 230.6282,
+      "win_rate_against": 0.0
+    },
+    {
+      "average_loss": -90.2363,
+      "characteristics": {
+        "body_bucket": "mid",
+        "close_location_bucket": "mid",
+        "distance_bucket": "mid",
+        "entry_reason": "trend continuation after controlled pullback; liquidity is supportive; accepting a volatile candle with strong close",
+        "liquidity_bucket": "mid",
+        "momentum_bucket": "mid",
+        "volatility_bucket": "mid",
+        "volume_bucket": "low"
+      },
+      "count": 2,
+      "key": "generic_loss|liq=mid|vol=low|var=mid",
+      "label": "loss cluster around mid-liquidity / low-volume entries",
+      "sample_reasons": [
+        "trend continuation after controlled pullback; liquidity is supportive; price is near a fresh high",
+        "trend continuation after controlled pullback; liquidity is supportive; accepting a volatile candle with strong close"
+      ],
+      "total_loss": 180.4726,
+      "win_rate_against": 0.0
+    },
+    {
+      "average_loss": -63.734,
+      "characteristics": {
+        "body_bucket": "mid",
+        "close_location_bucket": "mid",
+        "distance_bucket": "mid",
+        "entry_reason": "trend continuation after controlled pullback; liquidity is supportive; accepting a volatile candle with strong close",
+        "liquidity_bucket": "mid",
+        "momentum_bucket": "mid",
+        "volatility_bucket": "mid",
+        "volume_bucket": "low"
+      },
+      "count": 1,
+      "key": "late_trend_entry|liq=mid|vol=low|var=mid",
+      "label": "entries are late in trend continuation trades",
+      "sample_reasons": [
+        "trend continuation after controlled pullback; liquidity is supportive; accepting a volatile candle with strong close"
+      ],
+      "total_loss": 63.734,
+      "win_rate_against": 0.0
+    }
+  ],
+  "recommendations": [
+    "Add features for volume exhaustion after parabolic candles.",
+    "Delay entries until a post-pump consolidation forms.",
+    "Add earlier trend strength features so entries do not chase late moves."
+  ],
+  "summary": "Primary weakness: strategy loses often after 3-candle vertical pumps (2 trades, 230.63 total loss)."
+}
